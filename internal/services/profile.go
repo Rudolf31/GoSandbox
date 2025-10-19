@@ -27,12 +27,25 @@ func (p *profileServiceImpl) CreateProfile(profile dto.NewProfileDTO) (*int, *cu
 		Age:      profile.Age,
 	}
 
+	p.profilesMap[newProfile.Id] = newProfile
+
 	return &newProfile.Id, &customeerrors.Wrapper{}
 }
 
 // DeleteProfile implements ProfileService.
 func (p *profileServiceImpl) DeleteProfile(id int) *customeerrors.Wrapper {
-	panic("unimplemented")
+	_, ok := p.profilesMap[id]
+	if !ok {
+		return &customeerrors.Wrapper{
+			Error:       customeerrors.ErrNotFound,
+			ID:          id,
+			Description: "We haven't that user..",
+		}
+	}
+
+	delete(p.profilesMap, id)
+
+	return nil
 }
 
 // GetProfile implements ProfileService.
@@ -53,7 +66,23 @@ func (p *profileServiceImpl) GetProfile(id int) (*dto.ProfileDTO, *customeerrors
 
 // UpdateProfile implements ProfileService.
 func (p *profileServiceImpl) UpdateProfile(id int, profile dto.NewProfileDTO) (*dto.ProfileDTO, *customeerrors.Wrapper) {
-	panic("unimplemented")
+	existing, ok := p.profilesMap[id]
+	if !ok {
+		return nil, &customeerrors.Wrapper{
+			Error:       customeerrors.ErrNotFound,
+			ID:          id,
+			Description: "We haven't that user..",
+		}
+	}
+
+	// (без лишних аллокаций)
+	existing.Name = profile.Name
+	existing.LastName = profile.LastName
+	existing.Age = profile.Age
+
+	p.profilesMap[id] = existing // перезапись значения в map
+
+	return &existing, nil
 }
 
 func NewProfileService() ProfileService {
