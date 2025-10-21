@@ -1,6 +1,7 @@
 package main
 
 import (
+	customeerrors "interface_lesson/internal/customeErrors"
 	"interface_lesson/internal/models/dto"
 	"interface_lesson/internal/services"
 	"net/http"
@@ -10,9 +11,10 @@ import (
 )
 
 func main() {
-	calc := services.NewCalculatorService()
+
 	router := gin.Default()
 
+	calculatorService := services.NewCalculatorService()
 	profileService := services.NewProfileService()
 
 	router.GET("/add/:num1/:num2", func(c *gin.Context) {
@@ -30,7 +32,7 @@ func main() {
 			return
 		}
 
-		result := calc.Addition(num1, num2)
+		result := calculatorService.Addition(num1, num2)
 		c.JSON(http.StatusOK, gin.H{"result": result})
 	})
 
@@ -49,12 +51,12 @@ func main() {
 			return
 		}
 
-		result := calc.Subtraction(num1, num2)
+		result := calculatorService.Subtraction(num1, num2)
 		c.JSON(http.StatusOK, gin.H{"result": result})
 	})
 
 	router.GET("/count", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{"count": calc.GetOpperation()})
+		c.JSON(http.StatusOK, gin.H{"count": calculatorService.GetOpperation()})
 	})
 
 	router.POST("/profile", func(c *gin.Context) {
@@ -72,6 +74,29 @@ func main() {
 		}
 
 		c.JSON(http.StatusOK, gin.H{"id": *result})
+	})
+
+	router.GET("/profile/:id", func(c *gin.Context) {
+
+		id_str := c.Param("id")
+		id, err := strconv.Atoi(id_str)
+		if err != nil {
+			c.Status(http.StatusBadRequest)
+			return
+		}
+
+		result, serviceErr := profileService.GetProfile(id)
+		if serviceErr != nil {
+			switch serviceErr.Error {
+			case customeerrors.ErrNotFound:
+				c.JSON(http.StatusNotFound, serviceErr)
+			default:
+				c.Status(http.StatusInternalServerError)
+			}
+			return
+		}
+
+		c.JSON(http.StatusOK, *result)
 	})
 
 	router.Run()

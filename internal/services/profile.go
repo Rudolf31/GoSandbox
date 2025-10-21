@@ -29,7 +29,7 @@ func (p *profileServiceImpl) CreateProfile(profile dto.NewProfileDTO) (*int, *cu
 
 	p.profilesMap[newProfile.Id] = newProfile
 
-	return &newProfile.Id, &customeerrors.Wrapper{}
+	return &newProfile.Id, nil
 }
 
 // DeleteProfile implements ProfileService.

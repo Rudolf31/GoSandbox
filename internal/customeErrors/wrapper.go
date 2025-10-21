@@ -1,7 +1,7 @@
 package customeerrors
 
 type Wrapper struct {
-	Error       error
+	Error       error `json:"error"`
 	ID          int
-	Description string
+	Description string `json:"description"`
 }
