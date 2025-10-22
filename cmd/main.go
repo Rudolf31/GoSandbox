@@ -130,6 +130,36 @@ func main() {
 		c.JSON(http.StatusOK, *result)
 	})
 
+	router.PATCH("/profile/:id", func(c *gin.Context) {
+		var profile dto.PatchProfileDTO
+
+		idStr := c.Param("id")
+
+		id, errId := strconv.Atoi(idStr)
+		if errId != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid id"})
+			return
+		}
+
+		if err := c.ShouldBindJSON(&profile); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
+		result, serviceErr := profileService.PatchProfile(id, profile)
+		if serviceErr != nil {
+			switch serviceErr.Error {
+			case customeerrors.ErrNotFound:
+				c.JSON(http.StatusNotFound, serviceErr)
+			default:
+				c.Status(http.StatusInternalServerError)
+			}
+			return
+		}
+
+		c.JSON(http.StatusOK, *result)
+	})
+
 	router.DELETE("/profile/:id", func(c *gin.Context) {
 
 		id, errId := strconv.Atoi(c.Param("id"))

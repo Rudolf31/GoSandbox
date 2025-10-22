@@ -11,6 +11,7 @@ type ProfileService interface {
 	GetProfile(id int) (*dto.ProfileDTO, *customeerrors.Wrapper)
 	UpdateProfile(id int, profile dto.NewProfileDTO) (*dto.ProfileDTO, *customeerrors.Wrapper)
 	DeleteProfile(id int) *customeerrors.Wrapper
+	PatchProfile(id int, profile dto.PatchProfileDTO) (*dto.ProfileDTO, *customeerrors.Wrapper)
 }
 
 type profileServiceImpl struct {
@@ -81,6 +82,31 @@ func (p *profileServiceImpl) UpdateProfile(id int, profile dto.NewProfileDTO) (*
 	existing.Age = profile.Age
 
 	p.profilesMap[id] = existing // перезапись значения в map
+
+	return &existing, nil
+}
+
+func (p *profileServiceImpl) PatchProfile(id int, profile dto.PatchProfileDTO) (*dto.ProfileDTO, *customeerrors.Wrapper) {
+	existing, ok := p.profilesMap[id]
+	if !ok {
+		return nil, &customeerrors.Wrapper{
+			Error:       customeerrors.ErrNotFound,
+			ID:          id,
+			Description: "We haven't that user..",
+		}
+	}
+
+	if profile.Age != nil {
+		existing.Age = *profile.Age
+	}
+	if profile.LastName != nil {
+		existing.LastName = *profile.LastName
+	}
+	if profile.Name != nil {
+		existing.Name = *profile.Name
+	}
+
+	p.profilesMap[id] = existing
 
 	return &existing, nil
 }
