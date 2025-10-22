@@ -22,13 +22,13 @@ func main() {
 		num2_str := c.Param("num2")
 		num1, err := strconv.Atoi(num1_str)
 		if err != nil {
-			c.Status(http.StatusBadRequest)
+			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid num1"})
 			return
 		}
 
 		num2, err := strconv.Atoi(num2_str)
 		if err != nil {
-			c.Status(http.StatusBadRequest)
+			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid num2"})
 			return
 		}
 
@@ -42,12 +42,12 @@ func main() {
 
 		num1, err := strconv.Atoi(num1_str)
 		if err != nil {
-			c.Status(http.StatusBadRequest)
+			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid num1"})
 			return
 		}
 		num2, err := strconv.Atoi(num2_str)
 		if err != nil {
-			c.Status(http.StatusBadRequest)
+			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid num2"})
 			return
 		}
 
@@ -81,11 +81,42 @@ func main() {
 		id_str := c.Param("id")
 		id, err := strconv.Atoi(id_str)
 		if err != nil {
-			c.Status(http.StatusBadRequest)
+			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid id"})
 			return
 		}
 
 		result, serviceErr := profileService.GetProfile(id)
+		if serviceErr != nil {
+			switch serviceErr.Error {
+			case customeerrors.ErrNotFound:
+				c.JSON(http.StatusNotFound, serviceErr)
+			default:
+				c.Status(http.StatusInternalServerError)
+			}
+			return
+		}
+
+		c.JSON(http.StatusOK, *result)
+	})
+
+	router.PUT("/profile/:id", func(c *gin.Context) {
+
+		var profile dto.NewProfileDTO
+
+		idStr := c.Param("id")
+
+		id, errId := strconv.Atoi(idStr)
+		if errId != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid id"})
+			return
+		}
+
+		if err := c.ShouldBindJSON(&profile); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
+		result, serviceErr := profileService.UpdateProfile(id, profile)
 		if serviceErr != nil {
 			switch serviceErr.Error {
 			case customeerrors.ErrNotFound:
