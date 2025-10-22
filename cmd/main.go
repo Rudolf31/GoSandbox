@@ -130,5 +130,25 @@ func main() {
 		c.JSON(http.StatusOK, *result)
 	})
 
+	router.DELETE("/profile/:id", func(c *gin.Context) {
+
+		id, errId := strconv.Atoi(c.Param("id"))
+		if errId != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid id"})
+			return
+		}
+
+		if serviceErr := profileService.DeleteProfile(id); serviceErr != nil {
+			switch serviceErr.Error {
+			case customeerrors.ErrNotFound:
+				c.JSON(http.StatusNotFound, serviceErr)
+			default:
+				c.Status(http.StatusInternalServerError)
+			}
+		}
+
+		c.Status(http.StatusOK)
+	})
+
 	router.Run()
 }
