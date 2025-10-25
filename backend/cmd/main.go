@@ -8,6 +8,7 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"go.uber.org/fx"
 )
 
 func main() {
@@ -180,5 +181,6 @@ func main() {
 		c.Status(http.StatusOK)
 	})
 
+	fx.New().Run()
 	router.Run()
 }
