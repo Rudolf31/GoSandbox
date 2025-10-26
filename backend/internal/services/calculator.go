@@ -3,7 +3,7 @@ package services
 type CalculatorService interface {
 	Addition(a, b int) int
 	Subtraction(a, b int) int
-	GetOpperation() int
+	GetOperation() int
 }
 
 type calculatorServiceImpl struct {
@@ -16,8 +16,8 @@ func (c *calculatorServiceImpl) Addition(a int, b int) int {
 	return a + b
 }
 
-// GetOpperation implements CalculatorService.
-func (c *calculatorServiceImpl) GetOpperation() int {
+// GetOperation implements CalculatorService.
+func (c *calculatorServiceImpl) GetOperation() int {
 	return c.count
 }
 
