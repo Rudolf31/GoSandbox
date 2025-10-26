@@ -2,5 +2,5 @@ CREATE TABLE IF NOT EXISTS profiles (
     id SERIAL PRIMARY KEY,
     name VARCHAR(100),
     last_name VARCHAR(100),
-    age int NOT NULL CHECK(age BETWEEN 17 AND 100)
+    age int NOT NULL CHECK(age BETWEEN 18 AND 100)
 );
