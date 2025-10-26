@@ -128,6 +128,7 @@ func profileRoutes(router *gin.Engine, profileService services.ProfileService) {
 			default:
 				c.Status(http.StatusInternalServerError)
 			}
+			return
 		}
 
 		c.Status(http.StatusOK)
