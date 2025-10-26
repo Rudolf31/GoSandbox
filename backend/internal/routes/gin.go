@@ -12,10 +12,6 @@ import (
 func NewGin(lc fx.Lifecycle) *gin.Engine {
 	router := gin.Default()
 
-	router.GET("/test", func(ctx *gin.Context) {
-		ctx.JSON(http.StatusOK, gin.H{"test": "ok"})
-	})
-
 	server := &http.Server{
 		Addr:    ":8080",
 		Handler: router,
