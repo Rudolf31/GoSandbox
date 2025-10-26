@@ -49,6 +49,6 @@ func calculatorRoutes(router *gin.Engine, calculatorService services.CalculatorS
 	})
 
 	router.GET("/count", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{"count": calculatorService.GetOpperation()})
+		c.JSON(http.StatusOK, gin.H{"count": calculatorService.GetOperation()})
 	})
 }
