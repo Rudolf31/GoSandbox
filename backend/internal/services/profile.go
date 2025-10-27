@@ -1,45 +1,63 @@
 package services
 
 import (
+	"context"
 	customeerrors "interface_lesson/internal/customeErrors"
+	"interface_lesson/internal/database"
 	"interface_lesson/internal/models/dto"
-	"math/rand"
+
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 type ProfileService interface {
-	CreateProfile(profile dto.NewProfileDTO) (*int, *customeerrors.Wrapper)
-	GetProfile(id int) (*dto.ProfileDTO, *customeerrors.Wrapper)
-	UpdateProfile(id int, profile dto.NewProfileDTO) (*dto.ProfileDTO, *customeerrors.Wrapper)
-	DeleteProfile(id int) *customeerrors.Wrapper
-	PatchProfile(id int, profile dto.PatchProfileDTO) (*dto.ProfileDTO, *customeerrors.Wrapper)
+	CreateProfile(profile dto.NewProfileDTO) (*int32, *customeerrors.Wrapper)
+	GetProfile(id int32) (*dto.ProfileDTO, *customeerrors.Wrapper)
+	UpdateProfile(id int32, profile dto.NewProfileDTO) (*dto.ProfileDTO, *customeerrors.Wrapper)
+	DeleteProfile(id int32) *customeerrors.Wrapper
+	PatchProfile(id int32, profile dto.PatchProfileDTO) (*dto.ProfileDTO, *customeerrors.Wrapper)
 }
 
 type profileServiceImpl struct {
-	profilesMap map[int]dto.ProfileDTO
+	profilesMap map[int32]dto.ProfileDTO
+	pool        *pgxpool.Pool
 }
 
 // CreateProfile implements ProfileService.
-func (p *profileServiceImpl) CreateProfile(profile dto.NewProfileDTO) (*int, *customeerrors.Wrapper) {
+func (p *profileServiceImpl) CreateProfile(profile dto.NewProfileDTO) (*int32, *customeerrors.Wrapper) {
 
-	newProfile := dto.ProfileDTO{
-		Id:       rand.Int(),
-		Name:     profile.Name,
-		LastName: profile.LastName,
-		Age:      profile.Age,
+	q := database.New(p.pool)
+	newProfile, err := q.CreateProfile(context.Background(), database.CreateProfileParams{
+		Name:     &profile.Name,
+		LastName: &profile.LastName,
+		Age:      int32(profile.Age),
+	})
+	if err != nil {
+		return nil, &customeerrors.Wrapper{
+			Error:       customeerrors.ErrServerError,
+			Description: err.Error(),
+			ID:          0,
+		}
 	}
 
-	p.profilesMap[newProfile.Id] = newProfile
+	return &newProfile.ID, nil
 
-	return &newProfile.Id, nil
+	// newProfile := dto.ProfileDTO{
+	// 	Id:       rand.Int(),
+	// 	Name:     profile.Name,
+	// 	LastName: profile.LastName,
+	// 	Age:      profile.Age,
+	// }
+
+	// p.profilesMap[newProfile.Id] = newProfile
 }
 
 // DeleteProfile implements ProfileService.
-func (p *profileServiceImpl) DeleteProfile(id int) *customeerrors.Wrapper {
+func (p *profileServiceImpl) DeleteProfile(id int32) *customeerrors.Wrapper {
 	_, ok := p.profilesMap[id]
 	if !ok {
 		return &customeerrors.Wrapper{
 			Error:       customeerrors.ErrNotFound,
-			ID:          id,
+			ID:          0,
 			Description: "We haven't that user..",
 		}
 	}
@@ -50,13 +68,13 @@ func (p *profileServiceImpl) DeleteProfile(id int) *customeerrors.Wrapper {
 }
 
 // GetProfile implements ProfileService.
-func (p *profileServiceImpl) GetProfile(id int) (*dto.ProfileDTO, *customeerrors.Wrapper) {
+func (p *profileServiceImpl) GetProfile(id int32) (*dto.ProfileDTO, *customeerrors.Wrapper) {
 	profile, ok := p.profilesMap[id]
 
 	if !ok {
 		return nil, &customeerrors.Wrapper{
 			Error:       customeerrors.ErrNotFound,
-			ID:          id,
+			ID:          0,
 			Description: "We haven't that user..",
 		}
 	}
@@ -66,12 +84,12 @@ func (p *profileServiceImpl) GetProfile(id int) (*dto.ProfileDTO, *customeerrors
 }
 
 // UpdateProfile implements ProfileService.
-func (p *profileServiceImpl) UpdateProfile(id int, profile dto.NewProfileDTO) (*dto.ProfileDTO, *customeerrors.Wrapper) {
+func (p *profileServiceImpl) UpdateProfile(id int32, profile dto.NewProfileDTO) (*dto.ProfileDTO, *customeerrors.Wrapper) {
 	existing, ok := p.profilesMap[id]
 	if !ok {
 		return nil, &customeerrors.Wrapper{
 			Error:       customeerrors.ErrNotFound,
-			ID:          id,
+			ID:          0,
 			Description: "We haven't that user..",
 		}
 	}
@@ -86,12 +104,12 @@ func (p *profileServiceImpl) UpdateProfile(id int, profile dto.NewProfileDTO) (*
 	return &existing, nil
 }
 
-func (p *profileServiceImpl) PatchProfile(id int, profile dto.PatchProfileDTO) (*dto.ProfileDTO, *customeerrors.Wrapper) {
+func (p *profileServiceImpl) PatchProfile(id int32, profile dto.PatchProfileDTO) (*dto.ProfileDTO, *customeerrors.Wrapper) {
 	existing, ok := p.profilesMap[id]
 	if !ok {
 		return nil, &customeerrors.Wrapper{
 			Error:       customeerrors.ErrNotFound,
-			ID:          id,
+			ID:          0,
 			Description: "We haven't that user..",
 		}
 	}
@@ -111,7 +129,10 @@ func (p *profileServiceImpl) PatchProfile(id int, profile dto.PatchProfileDTO) (
 	return &existing, nil
 }
 
-func NewProfileService() ProfileService {
-	p := &profileServiceImpl{profilesMap: make(map[int]dto.ProfileDTO)}
+func NewProfileService(pool *pgxpool.Pool) ProfileService {
+	p := &profileServiceImpl{
+		profilesMap: make(map[int32]dto.ProfileDTO),
+		pool:        pool,
+	}
 	return p
 }

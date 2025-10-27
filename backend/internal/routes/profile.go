@@ -38,7 +38,7 @@ func profileRoutes(router *gin.Engine, profileService services.ProfileService) {
 			return
 		}
 
-		result, serviceErr := profileService.GetProfile(id)
+		result, serviceErr := profileService.GetProfile(int32(id))
 		if serviceErr != nil {
 			switch serviceErr.Error {
 			case customeerrors.ErrNotFound:
@@ -69,7 +69,7 @@ func profileRoutes(router *gin.Engine, profileService services.ProfileService) {
 			return
 		}
 
-		result, serviceErr := profileService.UpdateProfile(id, profile)
+		result, serviceErr := profileService.UpdateProfile(int32(id), profile)
 		if serviceErr != nil {
 			switch serviceErr.Error {
 			case customeerrors.ErrNotFound:
@@ -99,7 +99,7 @@ func profileRoutes(router *gin.Engine, profileService services.ProfileService) {
 			return
 		}
 
-		result, serviceErr := profileService.PatchProfile(id, profile)
+		result, serviceErr := profileService.PatchProfile(int32(id), profile)
 		if serviceErr != nil {
 			switch serviceErr.Error {
 			case customeerrors.ErrNotFound:
@@ -121,7 +121,7 @@ func profileRoutes(router *gin.Engine, profileService services.ProfileService) {
 			return
 		}
 
-		if serviceErr := profileService.DeleteProfile(id); serviceErr != nil {
+		if serviceErr := profileService.DeleteProfile(int32(id)); serviceErr != nil {
 			switch serviceErr.Error {
 			case customeerrors.ErrNotFound:
 				c.JSON(http.StatusNotFound, serviceErr)

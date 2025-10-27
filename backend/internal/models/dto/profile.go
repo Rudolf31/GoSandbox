@@ -4,7 +4,7 @@ type ProfileDTO struct {
 	Name     string `json:"name"`
 	LastName string `json:"last_name"`
 	Age      int    `json:"age"`
-	Id       int    `json:"id"`
+	Id       int32  `json:"id"`
 }
 
 type NewProfileDTO struct {
