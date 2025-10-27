@@ -2,10 +2,12 @@ package services
 
 import (
 	"context"
+	"errors"
 	customeerrors "interface_lesson/internal/customeErrors"
 	"interface_lesson/internal/database"
 	"interface_lesson/internal/models/dto"
 
+	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
@@ -26,6 +28,7 @@ type profileServiceImpl struct {
 func (p *profileServiceImpl) CreateProfile(profile dto.NewProfileDTO) (*int32, *customeerrors.Wrapper) {
 
 	q := database.New(p.pool)
+
 	newProfile, err := q.CreateProfile(context.Background(), database.CreateProfileParams{
 		Name:     &profile.Name,
 		LastName: &profile.LastName,
@@ -40,46 +43,60 @@ func (p *profileServiceImpl) CreateProfile(profile dto.NewProfileDTO) (*int32, *
 	}
 
 	return &newProfile.ID, nil
-
-	// newProfile := dto.ProfileDTO{
-	// 	Id:       rand.Int(),
-	// 	Name:     profile.Name,
-	// 	LastName: profile.LastName,
-	// 	Age:      profile.Age,
-	// }
-
-	// p.profilesMap[newProfile.Id] = newProfile
 }
 
 // DeleteProfile implements ProfileService.
 func (p *profileServiceImpl) DeleteProfile(id int32) *customeerrors.Wrapper {
-	_, ok := p.profilesMap[id]
-	if !ok {
+
+	q := database.New(p.pool)
+
+	_, err := q.DeleteProfile(context.Background(), id)
+	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return &customeerrors.Wrapper{
+				Error:       customeerrors.ErrNotFound,
+				Description: "User not found",
+				ID:          0,
+			}
+		}
 		return &customeerrors.Wrapper{
-			Error:       customeerrors.ErrNotFound,
-			ID:          0,
-			Description: "We haven't that user..",
+			Error: customeerrors.ErrServerError,
+			ID:    0,
 		}
 	}
-
-	delete(p.profilesMap, id)
 
 	return nil
 }
 
 // GetProfile implements ProfileService.
 func (p *profileServiceImpl) GetProfile(id int32) (*dto.ProfileDTO, *customeerrors.Wrapper) {
-	profile, ok := p.profilesMap[id]
 
-	if !ok {
+	q := database.New(p.pool)
+
+	newProfile, err := q.GetProfile(context.Background(), id)
+
+	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, &customeerrors.Wrapper{
+				Error:       customeerrors.ErrNotFound,
+				Description: "User not found",
+				ID:          0,
+			}
+		}
 		return nil, &customeerrors.Wrapper{
-			Error:       customeerrors.ErrNotFound,
-			ID:          0,
-			Description: "We haven't that user..",
+			Error: customeerrors.ErrServerError,
+			ID:    0,
 		}
 	}
 
-	return &profile, nil
+	DTOProfile := dto.ProfileDTO{
+		Id:       newProfile.ID,
+		Name:     *newProfile.Name,
+		LastName: *newProfile.LastName,
+		Age:      int(newProfile.Age),
+	}
+
+	return &DTOProfile, nil
 
 }
 

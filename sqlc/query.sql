@@ -24,6 +24,7 @@ UPDATE profiles
 WHERE id = $1
 RETURNING *;
 
--- name: DeleteProfile :exec
+-- name: DeleteProfile :one
 DELETE FROM profiles
-WHERE id = $1;
+WHERE id = $1
+RETURNING id;
