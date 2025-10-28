@@ -16,9 +16,9 @@ RETURNING id, name, last_name, age
 `
 
 type CreateProfileParams struct {
-	Name     *string
-	LastName *string
-	Age      int32
+	Name     string
+	LastName string
+	Age      int16
 }
 
 func (q *Queries) CreateProfile(ctx context.Context, arg CreateProfileParams) (Profile, error) {
@@ -76,7 +76,7 @@ type PatchProfileParams struct {
 	ID       int32
 	Name     *string
 	LastName *string
-	Age      int32
+	Age      *int16
 }
 
 func (q *Queries) PatchProfile(ctx context.Context, arg PatchProfileParams) (Profile, error) {
@@ -107,9 +107,9 @@ RETURNING id, name, last_name, age
 
 type UpdateProfileParams struct {
 	ID       int32
-	Name     *string
-	LastName *string
-	Age      int32
+	Name     string
+	LastName string
+	Age      int16
 }
 
 func (q *Queries) UpdateProfile(ctx context.Context, arg UpdateProfileParams) (Profile, error) {

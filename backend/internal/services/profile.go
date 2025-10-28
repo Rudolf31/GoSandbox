@@ -20,7 +20,7 @@ type ProfileService interface {
 }
 
 type profileServiceImpl struct {
-	profilesMap map[int32]dto.ProfileDTO
+	profilesMap map[int]dto.ProfileDTO
 	pool        *pgxpool.Pool
 }
 
@@ -30,9 +30,9 @@ func (p *profileServiceImpl) CreateProfile(profile dto.NewProfileDTO) (*int32, *
 	q := database.New(p.pool)
 
 	newProfile, err := q.CreateProfile(context.Background(), database.CreateProfileParams{
-		Name:     &profile.Name,
-		LastName: &profile.LastName,
-		Age:      int32(profile.Age),
+		Name:     profile.Name,
+		LastName: profile.LastName,
+		Age:      int16(profile.Age),
 	})
 	if err != nil {
 		return nil, &customeerrors.Wrapper{
@@ -91,9 +91,9 @@ func (p *profileServiceImpl) GetProfile(id int32) (*dto.ProfileDTO, *customeerro
 
 	DTOProfile := dto.ProfileDTO{
 		Id:       newProfile.ID,
-		Name:     *newProfile.Name,
-		LastName: *newProfile.LastName,
-		Age:      int(newProfile.Age),
+		Name:     newProfile.Name,
+		LastName: newProfile.LastName,
+		Age:      newProfile.Age,
 	}
 
 	return &DTOProfile, nil
@@ -102,53 +102,78 @@ func (p *profileServiceImpl) GetProfile(id int32) (*dto.ProfileDTO, *customeerro
 
 // UpdateProfile implements ProfileService.
 func (p *profileServiceImpl) UpdateProfile(id int32, profile dto.NewProfileDTO) (*dto.ProfileDTO, *customeerrors.Wrapper) {
-	existing, ok := p.profilesMap[id]
-	if !ok {
+
+	q := database.New(p.pool)
+
+	newProfile, err := q.UpdateProfile(context.Background(), database.UpdateProfileParams{
+		ID:       id,
+		Name:     profile.Name,
+		LastName: profile.LastName,
+		Age:      int16(profile.Age),
+	})
+
+	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, &customeerrors.Wrapper{
+				Error:       customeerrors.ErrNotFound,
+				Description: "User not found",
+				ID:          0,
+			}
+		}
 		return nil, &customeerrors.Wrapper{
-			Error:       customeerrors.ErrNotFound,
-			ID:          0,
-			Description: "We haven't that user..",
+			Error: customeerrors.ErrServerError,
+			ID:    0,
 		}
 	}
 
-	// (без лишних аллокаций)
-	existing.Name = profile.Name
-	existing.LastName = profile.LastName
-	existing.Age = profile.Age
+	DTOProfile := dto.ProfileDTO{
+		Id:       newProfile.ID,
+		Name:     newProfile.Name,
+		LastName: newProfile.LastName,
+		Age:      int16(newProfile.Age),
+	}
 
-	p.profilesMap[id] = existing // перезапись значения в map
-
-	return &existing, nil
+	return &DTOProfile, nil
 }
 
 func (p *profileServiceImpl) PatchProfile(id int32, profile dto.PatchProfileDTO) (*dto.ProfileDTO, *customeerrors.Wrapper) {
-	existing, ok := p.profilesMap[id]
-	if !ok {
+
+	q := database.New(p.pool)
+
+	newProfile, err := q.PatchProfile(context.Background(), database.PatchProfileParams{
+		ID:       id,
+		Name:     profile.Name,
+		LastName: profile.LastName,
+		Age:      profile.Age,
+	})
+
+	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, &customeerrors.Wrapper{
+				Error:       customeerrors.ErrNotFound,
+				Description: "User not found",
+				ID:          0,
+			}
+		}
 		return nil, &customeerrors.Wrapper{
-			Error:       customeerrors.ErrNotFound,
-			ID:          0,
-			Description: "We haven't that user..",
+			Error: customeerrors.ErrServerError,
+			ID:    0,
 		}
 	}
 
-	if profile.Age != nil {
-		existing.Age = *profile.Age
-	}
-	if profile.LastName != nil {
-		existing.LastName = *profile.LastName
-	}
-	if profile.Name != nil {
-		existing.Name = *profile.Name
+	DTOProfile := dto.ProfileDTO{
+		Id:       newProfile.ID,
+		Name:     newProfile.Name,
+		LastName: newProfile.LastName,
+		Age:      int16(newProfile.Age),
 	}
 
-	p.profilesMap[id] = existing
-
-	return &existing, nil
+	return &DTOProfile, nil
 }
 
 func NewProfileService(pool *pgxpool.Pool) ProfileService {
 	p := &profileServiceImpl{
-		profilesMap: make(map[int32]dto.ProfileDTO),
+		profilesMap: make(map[int]dto.ProfileDTO),
 		pool:        pool,
 	}
 	return p
