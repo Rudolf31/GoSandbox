@@ -20,8 +20,7 @@ type ProfileService interface {
 }
 
 type profileServiceImpl struct {
-	profilesMap map[int]dto.ProfileDTO
-	pool        *pgxpool.Pool
+	pool *pgxpool.Pool
 }
 
 // CreateProfile implements ProfileService.
@@ -173,8 +172,7 @@ func (p *profileServiceImpl) PatchProfile(id int32, profile dto.PatchProfileDTO)
 
 func NewProfileService(pool *pgxpool.Pool) ProfileService {
 	p := &profileServiceImpl{
-		profilesMap: make(map[int]dto.ProfileDTO),
-		pool:        pool,
+		pool: pool,
 	}
 	return p
 }
