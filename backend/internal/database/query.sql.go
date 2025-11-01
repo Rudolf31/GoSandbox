@@ -16,9 +16,9 @@ RETURNING id, name, last_name, age
 `
 
 type CreateProfileParams struct {
-	Name     *string
-	LastName *string
-	Age      int32
+	Name     string
+	LastName string
+	Age      int16
 }
 
 func (q *Queries) CreateProfile(ctx context.Context, arg CreateProfileParams) (Profile, error) {
@@ -33,14 +33,16 @@ func (q *Queries) CreateProfile(ctx context.Context, arg CreateProfileParams) (P
 	return i, err
 }
 
-const deleteProfile = `-- name: DeleteProfile :exec
+const deleteProfile = `-- name: DeleteProfile :one
 DELETE FROM profiles
 WHERE id = $1
+RETURNING id
 `
 
-func (q *Queries) DeleteProfile(ctx context.Context, id int32) error {
-	_, err := q.db.Exec(ctx, deleteProfile, id)
-	return err
+func (q *Queries) DeleteProfile(ctx context.Context, id int32) (int32, error) {
+	row := q.db.QueryRow(ctx, deleteProfile, id)
+	err := row.Scan(&id)
+	return id, err
 }
 
 const getProfile = `-- name: GetProfile :one
@@ -74,7 +76,7 @@ type PatchProfileParams struct {
 	ID       int32
 	Name     *string
 	LastName *string
-	Age      int32
+	Age      *int16
 }
 
 func (q *Queries) PatchProfile(ctx context.Context, arg PatchProfileParams) (Profile, error) {
@@ -105,9 +107,9 @@ RETURNING id, name, last_name, age
 
 type UpdateProfileParams struct {
 	ID       int32
-	Name     *string
-	LastName *string
-	Age      int32
+	Name     string
+	LastName string
+	Age      int16
 }
 
 func (q *Queries) UpdateProfile(ctx context.Context, arg UpdateProfileParams) (Profile, error) {
