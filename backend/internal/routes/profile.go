@@ -26,7 +26,7 @@ func profileRoutes(router *gin.Engine, profileService services.ProfileService) {
 // @Accept		json
 // @Produce		json
 // @Param		request	body		dto.NewProfileDTO	true	"New profile"
-// @Success      200              {int}    "ok"
+// @Success      200              {integer}    "ok"
 // @Failure		400 "Bad Request"
 // @Router		/profile [post]
 func createProfile(c *gin.Context, profileService services.ProfileService) {
