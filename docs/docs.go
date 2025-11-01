@@ -204,13 +204,6 @@ const docTemplate = `{
                 "summary": "Update a profile",
                 "parameters": [
                     {
-                        "type": "integer",
-                        "description": "Profile id",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
                         "description": "New profile",
                         "name": "request",
                         "in": "body",
@@ -285,13 +278,6 @@ const docTemplate = `{
                 ],
                 "summary": "Patch a profile",
                 "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Profile id",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    },
                     {
                         "description": "New profile",
                         "name": "request",
