@@ -21,7 +21,15 @@ func profileRoutes(router *gin.Engine, profileService services.ProfileService) {
 	}
 }
 
-// TODO: write a doc for swagger
+// TODO: Check what return that method and CreateProfile
+// @Summary 	Create a new profile
+// @Tags 		Profile
+// @Accept		json
+// @Produce		json
+// @Param		request	body		dto.NewProfileDTO	true	"New profile"
+// @Success      200              {int}    "ok"
+// @Failure		400 "Bad Request"
+// @Router		/profile [post]
 func createProfile(c *gin.Context, profileService services.ProfileService) {
 	var profile dto.NewProfileDTO
 
@@ -32,14 +40,23 @@ func createProfile(c *gin.Context, profileService services.ProfileService) {
 
 	result, err := profileService.CreateProfile(profile)
 	if err != nil {
-		c.Status(http.StatusInternalServerError)
+		c.JSON(http.StatusInternalServerError, err)
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{"id": *result})
 }
 
-// TODO: write a doc for swagger
+// TODO Have am i the 404 error?
+// @Summary 	Get a profile
+// @Tags 		Profile
+// @Accept		json
+// @Produce		json
+// @Param		id	path		int	true	"Profile id"
+// @Success		200 {object} dto.ProfileDTO "ok"
+// @Failure		400 "Bad Request"
+// @Failure		404 {object} customeerrors.Wrapper "Profile not found"
+// @Router		/profile/{id} [get]
 func getProfile(c *gin.Context, profileService services.ProfileService) {
 	idStr := c.Param("id")
 	id, err := strconv.Atoi(idStr)
@@ -62,7 +79,15 @@ func getProfile(c *gin.Context, profileService services.ProfileService) {
 	c.JSON(http.StatusOK, *result)
 }
 
-// TODO: write a doc for swagger
+// @Summary 	Update a profile
+// @Tags 		Profile
+// @Accept		json
+// @Produce		json
+// @Param		request body dto.NewProfileDTO true "New profile"
+// @Success		200 {object} dto.ProfileDTO "ok"
+// @Failure		400 "Bad Request"
+// @Failure		404 {object} customeerrors.Wrapper "Profile not found"
+// @Router		/profile/{id} [put]
 func updateProfile(c *gin.Context, profileService services.ProfileService) {
 	var profile dto.NewProfileDTO
 
@@ -92,7 +117,15 @@ func updateProfile(c *gin.Context, profileService services.ProfileService) {
 	c.JSON(http.StatusOK, *result)
 }
 
-// TODO: write a doc for swagger
+// @Summary 	Patch a profile
+// @Tags 		Profile
+// @Accept		json
+// @Produce		json
+// @Param		request body dto.PatchProfileDTO true "New profile"
+// @Success		200 {object} dto.ProfileDTO "ok"
+// @Failure		400 "Bad Request"
+// @Failure		404 {object} customeerrors.Wrapper "Profile not found"
+// @Router		/profile/{id} [patch]
 func patchProfile(c *gin.Context, profileService services.ProfileService) {
 	var profile dto.PatchProfileDTO
 
@@ -122,7 +155,15 @@ func patchProfile(c *gin.Context, profileService services.ProfileService) {
 	c.JSON(http.StatusOK, *result)
 }
 
-// TODO: write a doc for swagger
+// @Summary 	Delete a profile
+// @Tags 		Profile
+// @Accept		json
+// @Produce		json
+// @Param		id	path		int	true	"Profile id"
+// @Success		200
+// @Failure		400 "Bad Request"
+// @Failure		404 {object} customeerrors.Wrapper "Profile not found"
+// @Router		/profile/{id} [delete]
 func deleteProfile(c *gin.Context, profileService services.ProfileService) {
 	id, errId := strconv.Atoi(c.Param("id"))
 	if errId != nil {

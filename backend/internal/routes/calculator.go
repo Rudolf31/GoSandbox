@@ -20,8 +20,8 @@ func calculatorRoutes(router *gin.Engine, calculatorService services.CalculatorS
 
 // @Summary 	Addition of two numbers
 // @Tags Calculator
-// @Accept		plain
-// @Produce	json
+// @Accept		json
+// @Produce		json
 // @Param		num1	path	int	true	"First number"
 // @Param		num2	path	int	true	"Second number"
 // @Success	200
@@ -48,8 +48,8 @@ func addition(c *gin.Context, calculatorService services.CalculatorService) {
 
 // @Summary 	Subtraction of two numbers
 // @Tags Calculator
-// @Accept		plain
-// @Produce	json
+// @Accept		json
+// @Produce		json
 // @Param		num1	path	int	true	"First number"
 // @Param		num2	path	int	true	"Second number"
 // @Success	200
@@ -76,10 +76,10 @@ func subtraction(c *gin.Context, calculatorService services.CalculatorService) {
 
 // @Summary 	Count of operations
 // @Tags Calculator
-// @Accept		plain
-// @Produce	json
-// @Success	200
-// @Failure	400 "Bad Request"
+// @Accept		json
+// @Produce		json
+// @Success		200
+// @Failure		400 "Bad Request"
 // @Router		/calculator/count [get]
 func count(c *gin.Context, calculatorService services.CalculatorService) {
 	c.JSON(http.StatusOK, gin.H{"count": calculatorService.GetOperation()})
