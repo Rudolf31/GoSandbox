@@ -193,6 +193,11 @@ paths:
       consumes:
       - application/json
       parameters:
+      - description: Profile id
+        in: path
+        name: id
+        required: true
+        type: integer
       - description: New profile
         in: body
         name: request
@@ -219,6 +224,11 @@ paths:
       consumes:
       - application/json
       parameters:
+      - description: Profile id
+        in: path
+        name: id
+        required: true
+        type: integer
       - description: New profile
         in: body
         name: request

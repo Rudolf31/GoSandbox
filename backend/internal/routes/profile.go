@@ -21,7 +21,6 @@ func profileRoutes(router *gin.Engine, profileService services.ProfileService) {
 	}
 }
 
-// TODO: Check what return that method and CreateProfile
 // @Summary 	Create a new profile
 // @Tags 		Profile
 // @Accept		json
@@ -47,7 +46,6 @@ func createProfile(c *gin.Context, profileService services.ProfileService) {
 	c.JSON(http.StatusOK, gin.H{"id": *result})
 }
 
-// TODO Have am i the 404 error?
 // @Summary 	Get a profile
 // @Tags 		Profile
 // @Accept		json
@@ -83,6 +81,7 @@ func getProfile(c *gin.Context, profileService services.ProfileService) {
 // @Tags 		Profile
 // @Accept		json
 // @Produce		json
+// @Param		id	path		int	true	"Profile id"
 // @Param		request body dto.NewProfileDTO true "New profile"
 // @Success		200 {object} dto.ProfileDTO "ok"
 // @Failure		400 "Bad Request"
@@ -121,6 +120,7 @@ func updateProfile(c *gin.Context, profileService services.ProfileService) {
 // @Tags 		Profile
 // @Accept		json
 // @Produce		json
+// @Param		id	path		int	true	"Profile id"
 // @Param		request body dto.PatchProfileDTO true "New profile"
 // @Success		200 {object} dto.ProfileDTO "ok"
 // @Failure		400 "Bad Request"
