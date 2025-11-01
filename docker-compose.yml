@@ -15,7 +15,7 @@ services:
     networks:
       - network
     volumes:
-      - postgres_data:/var/lib/postgresql
+      - postgres_data:/var/lib/postgresql/data
       - ./sqlc/schema.sql:/docker-entrypoint-initdb.d/init.sql
 
 volumes:
