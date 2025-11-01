@@ -6,7 +6,7 @@ package database
 
 type Profile struct {
 	ID       int32
-	Name     string
-	LastName string
-	Age      int16
+	Name     *string
+	LastName *string
+	Age      int32
 }

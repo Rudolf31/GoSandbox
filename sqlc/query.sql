@@ -18,13 +18,12 @@ RETURNING *;
 
 -- name: PatchProfile :one
 UPDATE profiles
-    SET name = COALESCE(sqlc.narg('name'), name),
-    last_name = COALESCE(sqlc.narg('last_name'), last_name),
-    age = COALESCE(sqlc.narg('age'), age)
+    SET name = COALESCE($2, name),
+    last_name = COALESCE($3, last_name),
+    age = COALESCE($4, age)
 WHERE id = $1
 RETURNING *;
 
--- name: DeleteProfile :one
+-- name: DeleteProfile :exec
 DELETE FROM profiles
-WHERE id = $1
-RETURNING id;
+WHERE id = $1;
