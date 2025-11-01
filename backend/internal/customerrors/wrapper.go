@@ -1,4 +1,4 @@
-package customeerrors
+package customerrors
 
 type Wrapper struct {
 	Error       error `json:"error"`

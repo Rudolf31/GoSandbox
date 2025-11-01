@@ -3,7 +3,7 @@ package services
 import (
 	"context"
 	"errors"
-	customeerrors "interface_lesson/internal/customeErrors"
+	customeerrors "interface_lesson/internal/customerrors"
 	"interface_lesson/internal/database"
 	"interface_lesson/internal/models/dto"
 

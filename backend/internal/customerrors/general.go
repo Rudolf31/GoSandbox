@@ -1,4 +1,4 @@
-package customeerrors
+package customerrors
 
 import "errors"
 

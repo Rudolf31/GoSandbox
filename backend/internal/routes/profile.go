@@ -1,7 +1,7 @@
 package routes
 
 import (
-	customeerrors "interface_lesson/internal/customeErrors"
+	customeerrors "interface_lesson/internal/customerrors"
 	"interface_lesson/internal/models/dto"
 	"interface_lesson/internal/services"
 	"net/http"
