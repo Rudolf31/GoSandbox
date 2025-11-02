@@ -78,6 +78,44 @@ const docTemplate = `{
                 }
             }
         },
+        "/calculator/division/{num1}/{num2}": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Calculator"
+                ],
+                "summary": "Division of two numbers",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "First number",
+                        "name": "num1",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Second number",
+                        "name": "num2",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    }
+                }
+            }
+        },
         "/calculator/sub/{num1}/{num2}": {
             "get": {
                 "consumes": [
@@ -186,7 +224,7 @@ const docTemplate = `{
                     "404": {
                         "description": "Profile not found",
                         "schema": {
-                            "$ref": "#/definitions/customeerrors.Wrapper"
+                            "$ref": "#/definitions/customerrors.Wrapper"
                         }
                     }
                 }
@@ -233,7 +271,7 @@ const docTemplate = `{
                     "404": {
                         "description": "Profile not found",
                         "schema": {
-                            "$ref": "#/definitions/customeerrors.Wrapper"
+                            "$ref": "#/definitions/customerrors.Wrapper"
                         }
                     }
                 }
@@ -268,7 +306,7 @@ const docTemplate = `{
                     "404": {
                         "description": "Profile not found",
                         "schema": {
-                            "$ref": "#/definitions/customeerrors.Wrapper"
+                            "$ref": "#/definitions/customerrors.Wrapper"
                         }
                     }
                 }
@@ -315,7 +353,7 @@ const docTemplate = `{
                     "404": {
                         "description": "Profile not found",
                         "schema": {
-                            "$ref": "#/definitions/customeerrors.Wrapper"
+                            "$ref": "#/definitions/customerrors.Wrapper"
                         }
                     }
                 }
@@ -323,13 +361,15 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "customeerrors.Wrapper": {
+        "customerrors.Wrapper": {
             "type": "object",
             "properties": {
                 "description": {
                     "type": "string"
                 },
-                "error": {},
+                "error": {
+                    "description": "TODO: Remove id from Wrapper"
+                },
                 "id": {
                     "type": "integer"
                 }

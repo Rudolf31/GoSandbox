@@ -1,10 +1,11 @@
 basePath: /
 definitions:
-  customeerrors.Wrapper:
+  customerrors.Wrapper:
     properties:
       description:
         type: string
-      error: {}
+      error:
+        description: 'TODO: Remove id from Wrapper'
       id:
         type: integer
     type: object
@@ -92,6 +93,31 @@ paths:
       summary: Count of operations
       tags:
       - Calculator
+  /calculator/division/{num1}/{num2}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: First number
+        in: path
+        name: num1
+        required: true
+        type: integer
+      - description: Second number
+        in: path
+        name: num2
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+      summary: Division of two numbers
+      tags:
+      - Calculator
   /calculator/sub/{num1}/{num2}:
     get:
       consumes:
@@ -160,7 +186,7 @@ paths:
         "404":
           description: Profile not found
           schema:
-            $ref: '#/definitions/customeerrors.Wrapper'
+            $ref: '#/definitions/customerrors.Wrapper'
       summary: Delete a profile
       tags:
       - Profile
@@ -185,7 +211,7 @@ paths:
         "404":
           description: Profile not found
           schema:
-            $ref: '#/definitions/customeerrors.Wrapper'
+            $ref: '#/definitions/customerrors.Wrapper'
       summary: Get a profile
       tags:
       - Profile
@@ -216,7 +242,7 @@ paths:
         "404":
           description: Profile not found
           schema:
-            $ref: '#/definitions/customeerrors.Wrapper'
+            $ref: '#/definitions/customerrors.Wrapper'
       summary: Patch a profile
       tags:
       - Profile
@@ -247,7 +273,7 @@ paths:
         "404":
           description: Profile not found
           schema:
-            $ref: '#/definitions/customeerrors.Wrapper'
+            $ref: '#/definitions/customerrors.Wrapper'
       summary: Update a profile
       tags:
       - Profile

@@ -53,7 +53,7 @@ func createProfile(c *gin.Context, profileService services.ProfileService) {
 // @Param		id	path		int	true	"Profile id"
 // @Success		200 {object} dto.ProfileDTO "ok"
 // @Failure		400 "Bad Request"
-// @Failure		404 {object} customeerrors.Wrapper "Profile not found"
+// @Failure		404 {object} customerrors.Wrapper "Profile not found"
 // @Router		/profile/{id} [get]
 func getProfile(c *gin.Context, profileService services.ProfileService) {
 	idStr := c.Param("id")
@@ -85,7 +85,7 @@ func getProfile(c *gin.Context, profileService services.ProfileService) {
 // @Param		request body dto.NewProfileDTO true "New profile"
 // @Success		200 {object} dto.ProfileDTO "ok"
 // @Failure		400 "Bad Request"
-// @Failure		404 {object} customeerrors.Wrapper "Profile not found"
+// @Failure		404 {object} customerrors.Wrapper "Profile not found"
 // @Router		/profile/{id} [put]
 func updateProfile(c *gin.Context, profileService services.ProfileService) {
 	var profile dto.NewProfileDTO
@@ -124,7 +124,7 @@ func updateProfile(c *gin.Context, profileService services.ProfileService) {
 // @Param		request body dto.PatchProfileDTO true "New profile"
 // @Success		200 {object} dto.ProfileDTO "ok"
 // @Failure		400 "Bad Request"
-// @Failure		404 {object} customeerrors.Wrapper "Profile not found"
+// @Failure		404 {object} customerrors.Wrapper "Profile not found"
 // @Router		/profile/{id} [patch]
 func patchProfile(c *gin.Context, profileService services.ProfileService) {
 	var profile dto.PatchProfileDTO
@@ -162,7 +162,7 @@ func patchProfile(c *gin.Context, profileService services.ProfileService) {
 // @Param		id	path		int	true	"Profile id"
 // @Success		200
 // @Failure		400 "Bad Request"
-// @Failure		404 {object} customeerrors.Wrapper "Profile not found"
+// @Failure		404 {object} customerrors.Wrapper "Profile not found"
 // @Router		/profile/{id} [delete]
 func deleteProfile(c *gin.Context, profileService services.ProfileService) {
 	id, errId := strconv.Atoi(c.Param("id"))

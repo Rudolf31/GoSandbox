@@ -12,6 +12,7 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 
 	"go.uber.org/fx"
+	"go.uber.org/zap"
 )
 
 // @title          CRUD app
@@ -32,11 +33,13 @@ func main() {
 		fx.Provide(
 			database.NewPool,
 			routes.NewGin,
+			zap.NewProduction,
 		),
 		services.Module,
 		routes.Module,
 
-		fx.Invoke(func(pool *pgxpool.Pool, router *gin.Engine) {
+		fx.Invoke(func(pool *pgxpool.Pool, router *gin.Engine, log *zap.Logger) {
+			//TODO: replace it to new file like "swagger" and "setup"
 			docs.SwaggerInfo.Schemes = []string{"http"}
 			router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 		}),
