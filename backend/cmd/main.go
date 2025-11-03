@@ -26,7 +26,6 @@ import (
 // @securityDefinitions.apikey JWT
 // @in                         header
 // @name                       Authorization
-
 func main() {
 
 	fx.New(

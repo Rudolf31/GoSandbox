@@ -36,7 +36,7 @@ func (p *profileServiceImpl) CreateProfile(profile dto.NewProfileDTO) (*int32, *
 		Age:      int16(profile.Age),
 	})
 	if err != nil {
-		p.log.Error("Faild to create new Profile")
+		p.log.Error("Failed to create new profile")
 		return nil, &customeerrors.Wrapper{
 			Error:       customeerrors.ErrServerError,
 			Description: err.Error(),
@@ -59,18 +59,38 @@ func (p *profileServiceImpl) DeleteProfile(id int32) *customeerrors.Wrapper {
 
 	_, err := q.DeleteProfile(context.Background(), id)
 	if err != nil {
+
 		if errors.Is(err, pgx.ErrNoRows) {
+
+			p.log.Warn(
+				"Profile doesn't exist",
+				zap.Int32("id", id),
+				zap.Error(err),
+			)
+
 			return &customeerrors.Wrapper{
 				Error:       customeerrors.ErrNotFound,
 				Description: "User not found",
 				ID:          0,
 			}
 		}
+
+		p.log.Error(
+			"Failed to delete profile",
+			zap.Int32("id", id),
+			zap.Error(err),
+		)
+
 		return &customeerrors.Wrapper{
 			Error: customeerrors.ErrServerError,
 			ID:    0,
 		}
 	}
+
+	p.log.Info(
+		"Profile deleted",
+		zap.Int32("id", id),
+	)
 
 	return nil
 }
@@ -83,13 +103,28 @@ func (p *profileServiceImpl) GetProfile(id int32) (*dto.ProfileDTO, *customeerro
 	newProfile, err := q.GetProfile(context.Background(), id)
 
 	if err != nil {
+
 		if errors.Is(err, pgx.ErrNoRows) {
+
+			p.log.Warn(
+				"Profile doesn't exist",
+				zap.Int32("id", id),
+				zap.Error(err),
+			)
+
 			return nil, &customeerrors.Wrapper{
 				Error:       customeerrors.ErrNotFound,
 				Description: "User not found",
 				ID:          0,
 			}
 		}
+
+		p.log.Error(
+			"Failed to get profile",
+			zap.Int32("id", id),
+			zap.Error(err),
+		)
+
 		return nil, &customeerrors.Wrapper{
 			Error: customeerrors.ErrServerError,
 			ID:    0,
@@ -102,6 +137,11 @@ func (p *profileServiceImpl) GetProfile(id int32) (*dto.ProfileDTO, *customeerro
 		LastName: newProfile.LastName,
 		Age:      newProfile.Age,
 	}
+
+	p.log.Info(
+		"Profile retrieved successfully",
+		zap.Int32("id", id),
+	)
 
 	return &DTOProfile, nil
 
@@ -121,12 +161,26 @@ func (p *profileServiceImpl) UpdateProfile(id int32, profile dto.NewProfileDTO) 
 
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
+
+			p.log.Warn(
+				"Profile doesn't exist",
+				zap.Int32("id", id),
+				zap.Error(err),
+			)
+
 			return nil, &customeerrors.Wrapper{
 				Error:       customeerrors.ErrNotFound,
 				Description: "User not found",
 				ID:          0,
 			}
 		}
+
+		p.log.Error(
+			"Failed to update profile",
+			zap.Int32("id", id),
+			zap.Error(err),
+		)
+
 		return nil, &customeerrors.Wrapper{
 			Error: customeerrors.ErrServerError,
 			ID:    0,
@@ -139,6 +193,11 @@ func (p *profileServiceImpl) UpdateProfile(id int32, profile dto.NewProfileDTO) 
 		LastName: newProfile.LastName,
 		Age:      int16(newProfile.Age),
 	}
+
+	p.log.Info(
+		"Profile updated successfully",
+		zap.Int32("id", id),
+	)
 
 	return &DTOProfile, nil
 }
@@ -156,12 +215,26 @@ func (p *profileServiceImpl) PatchProfile(id int32, profile dto.PatchProfileDTO)
 
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
+
+			p.log.Warn(
+				"Profile doesn't exist",
+				zap.Int32("id", id),
+				zap.Error(err),
+			)
+
 			return nil, &customeerrors.Wrapper{
 				Error:       customeerrors.ErrNotFound,
 				Description: "User not found",
 				ID:          0,
 			}
 		}
+
+		p.log.Error(
+			"Failed to update profile",
+			zap.Int32("id", id),
+			zap.Error(err),
+		)
+
 		return nil, &customeerrors.Wrapper{
 			Error: customeerrors.ErrServerError,
 			ID:    0,
@@ -174,6 +247,11 @@ func (p *profileServiceImpl) PatchProfile(id int32, profile dto.PatchProfileDTO)
 		LastName: newProfile.LastName,
 		Age:      int16(newProfile.Age),
 	}
+
+	p.log.Info(
+		"Profile updated successfully",
+		zap.Int32("id", id),
+	)
 
 	return &DTOProfile, nil
 }
