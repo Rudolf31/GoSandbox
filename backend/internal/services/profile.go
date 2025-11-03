@@ -9,6 +9,7 @@ import (
 
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"go.uber.org/zap"
 )
 
 type ProfileService interface {
@@ -20,6 +21,7 @@ type ProfileService interface {
 }
 
 type profileServiceImpl struct {
+	log  *zap.Logger
 	pool *pgxpool.Pool
 }
 
@@ -34,12 +36,18 @@ func (p *profileServiceImpl) CreateProfile(profile dto.NewProfileDTO) (*int32, *
 		Age:      int16(profile.Age),
 	})
 	if err != nil {
+		p.log.Error("Faild to create new Profile")
 		return nil, &customeerrors.Wrapper{
 			Error:       customeerrors.ErrServerError,
 			Description: err.Error(),
 			ID:          0,
 		}
 	}
+
+	p.log.Info(
+		"New profile created",
+		zap.Int32("id", newProfile.ID),
+	)
 
 	return &newProfile.ID, nil
 }
@@ -170,9 +178,10 @@ func (p *profileServiceImpl) PatchProfile(id int32, profile dto.PatchProfileDTO)
 	return &DTOProfile, nil
 }
 
-func NewProfileService(pool *pgxpool.Pool) ProfileService {
+func NewProfileService(pool *pgxpool.Pool, log *zap.Logger) ProfileService {
 	p := &profileServiceImpl{
 		pool: pool,
+		log:  log,
 	}
 	return p
 }
