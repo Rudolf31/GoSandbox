@@ -3,5 +3,5 @@ package customerrors
 import "errors"
 
 var (
-	DivisionByZero = errors.New("Reall Einstein moment")
+	ErrDivisionByZero = errors.New("real Einstein moment")
 )

@@ -36,11 +36,13 @@ func (p *profileServiceImpl) CreateProfile(profile dto.NewProfileDTO) (*int32, *
 		Age:      int16(profile.Age),
 	})
 	if err != nil {
+
 		p.log.Error("Failed to create new profile")
-		return nil, &customeerrors.Wrapper{
-			Error:       customeerrors.ErrServerError,
-			Description: err.Error(),
-		}
+
+		return nil, customeerrors.NewErrorWrapper(
+			customeerrors.ErrServerError,
+			"Failed to create new profile",
+		)
 	}
 
 	p.log.Info(
@@ -67,10 +69,10 @@ func (p *profileServiceImpl) DeleteProfile(id int32) *customeerrors.Wrapper {
 				zap.Error(err),
 			)
 
-			return &customeerrors.Wrapper{
-				Error:       customeerrors.ErrNotFound,
-				Description: "User not found",
-			}
+			return customeerrors.NewErrorWrapper(
+				customeerrors.ErrNotFound,
+				"User not found",
+			)
 		}
 
 		p.log.Error(
@@ -79,9 +81,10 @@ func (p *profileServiceImpl) DeleteProfile(id int32) *customeerrors.Wrapper {
 			zap.Error(err),
 		)
 
-		return &customeerrors.Wrapper{
-			Error: customeerrors.ErrServerError,
-		}
+		return customeerrors.NewErrorWrapper(
+			customeerrors.ErrServerError,
+			"Failed to delete profile",
+		)
 	}
 
 	p.log.Info(
@@ -109,10 +112,10 @@ func (p *profileServiceImpl) GetProfile(id int32) (*dto.ProfileDTO, *customeerro
 				zap.Error(err),
 			)
 
-			return nil, &customeerrors.Wrapper{
-				Error:       customeerrors.ErrNotFound,
-				Description: "User not found",
-			}
+			return nil, customeerrors.NewErrorWrapper(
+				customeerrors.ErrNotFound,
+				"User not found",
+			)
 		}
 
 		p.log.Error(
@@ -121,9 +124,10 @@ func (p *profileServiceImpl) GetProfile(id int32) (*dto.ProfileDTO, *customeerro
 			zap.Error(err),
 		)
 
-		return nil, &customeerrors.Wrapper{
-			Error: customeerrors.ErrServerError,
-		}
+		return nil, customeerrors.NewErrorWrapper(
+			customeerrors.ErrServerError,
+			"Failed to get profile",
+		)
 	}
 
 	DTOProfile := dto.ProfileDTO{
@@ -163,10 +167,10 @@ func (p *profileServiceImpl) UpdateProfile(id int32, profile dto.NewProfileDTO) 
 				zap.Error(err),
 			)
 
-			return nil, &customeerrors.Wrapper{
-				Error:       customeerrors.ErrNotFound,
-				Description: "User not found",
-			}
+			return nil, customeerrors.NewErrorWrapper(
+				customeerrors.ErrNotFound,
+				"User not found",
+			)
 		}
 
 		p.log.Error(
@@ -175,9 +179,10 @@ func (p *profileServiceImpl) UpdateProfile(id int32, profile dto.NewProfileDTO) 
 			zap.Error(err),
 		)
 
-		return nil, &customeerrors.Wrapper{
-			Error: customeerrors.ErrServerError,
-		}
+		return nil, customeerrors.NewErrorWrapper(
+			customeerrors.ErrServerError,
+			"Failed to update profile",
+		)
 	}
 
 	DTOProfile := dto.ProfileDTO{
@@ -215,10 +220,10 @@ func (p *profileServiceImpl) PatchProfile(id int32, profile dto.PatchProfileDTO)
 				zap.Error(err),
 			)
 
-			return nil, &customeerrors.Wrapper{
-				Error:       customeerrors.ErrNotFound,
-				Description: "User not found",
-			}
+			return nil, customeerrors.NewErrorWrapper(
+				customeerrors.ErrNotFound,
+				"User not found",
+			)
 		}
 
 		p.log.Error(
@@ -227,9 +232,10 @@ func (p *profileServiceImpl) PatchProfile(id int32, profile dto.PatchProfileDTO)
 			zap.Error(err),
 		)
 
-		return nil, &customeerrors.Wrapper{
-			Error: customeerrors.ErrServerError,
-		}
+		return nil, customeerrors.NewErrorWrapper(
+			customeerrors.ErrServerError,
+			"Failed to update profile",
+		)
 	}
 
 	DTOProfile := dto.ProfileDTO{

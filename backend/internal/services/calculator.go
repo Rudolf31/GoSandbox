@@ -44,10 +44,10 @@ func (c *calculatorServiceImpl) Division(a int, b int) (int, *customeerrors.Wrap
 			zap.Int("a", a),
 			zap.Int("b", b),
 		)
-		return 0, &customeerrors.Wrapper{
-			Error:       customeerrors.DivisionByZero,
-			Description: "Whyyy..",
-		}
+		return 0, customeerrors.NewErrorWrapper(
+			customeerrors.ErrDivisionByZero,
+			"Whyyy..",
+		)
 	}
 	return a / b, nil
 }
