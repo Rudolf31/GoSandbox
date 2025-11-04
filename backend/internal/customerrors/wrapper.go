@@ -1,8 +1,6 @@
 package customerrors
 
 type Wrapper struct {
-	//TODO: Remove id from Wrapper
-	Error       error `json:"error"`
-	ID          int
+	Error       error  `json:"error"`
 	Description string `json:"description"`
 }

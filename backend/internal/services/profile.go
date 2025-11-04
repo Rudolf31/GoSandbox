@@ -40,7 +40,6 @@ func (p *profileServiceImpl) CreateProfile(profile dto.NewProfileDTO) (*int32, *
 		return nil, &customeerrors.Wrapper{
 			Error:       customeerrors.ErrServerError,
 			Description: err.Error(),
-			ID:          0,
 		}
 	}
 
@@ -71,7 +70,6 @@ func (p *profileServiceImpl) DeleteProfile(id int32) *customeerrors.Wrapper {
 			return &customeerrors.Wrapper{
 				Error:       customeerrors.ErrNotFound,
 				Description: "User not found",
-				ID:          0,
 			}
 		}
 
@@ -83,7 +81,6 @@ func (p *profileServiceImpl) DeleteProfile(id int32) *customeerrors.Wrapper {
 
 		return &customeerrors.Wrapper{
 			Error: customeerrors.ErrServerError,
-			ID:    0,
 		}
 	}
 
@@ -115,7 +112,6 @@ func (p *profileServiceImpl) GetProfile(id int32) (*dto.ProfileDTO, *customeerro
 			return nil, &customeerrors.Wrapper{
 				Error:       customeerrors.ErrNotFound,
 				Description: "User not found",
-				ID:          0,
 			}
 		}
 
@@ -127,7 +123,6 @@ func (p *profileServiceImpl) GetProfile(id int32) (*dto.ProfileDTO, *customeerro
 
 		return nil, &customeerrors.Wrapper{
 			Error: customeerrors.ErrServerError,
-			ID:    0,
 		}
 	}
 
@@ -171,7 +166,6 @@ func (p *profileServiceImpl) UpdateProfile(id int32, profile dto.NewProfileDTO) 
 			return nil, &customeerrors.Wrapper{
 				Error:       customeerrors.ErrNotFound,
 				Description: "User not found",
-				ID:          0,
 			}
 		}
 
@@ -183,7 +177,6 @@ func (p *profileServiceImpl) UpdateProfile(id int32, profile dto.NewProfileDTO) 
 
 		return nil, &customeerrors.Wrapper{
 			Error: customeerrors.ErrServerError,
-			ID:    0,
 		}
 	}
 
@@ -225,7 +218,6 @@ func (p *profileServiceImpl) PatchProfile(id int32, profile dto.PatchProfileDTO)
 			return nil, &customeerrors.Wrapper{
 				Error:       customeerrors.ErrNotFound,
 				Description: "User not found",
-				ID:          0,
 			}
 		}
 
@@ -237,7 +229,6 @@ func (p *profileServiceImpl) PatchProfile(id int32, profile dto.PatchProfileDTO)
 
 		return nil, &customeerrors.Wrapper{
 			Error: customeerrors.ErrServerError,
-			ID:    0,
 		}
 	}
 

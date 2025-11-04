@@ -45,9 +45,7 @@ func (c *calculatorServiceImpl) Division(a int, b int) (int, *customeerrors.Wrap
 			zap.Int("b", b),
 		)
 		return 0, &customeerrors.Wrapper{
-			//TODO: Remove id from Wrapper
 			Error:       customeerrors.DivisionByZero,
-			ID:          0,
 			Description: "Whyyy..",
 		}
 	}
