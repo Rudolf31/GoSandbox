@@ -1,15 +1,13 @@
 package main
 
 import (
-	"interface_lesson/docs"
 	"interface_lesson/internal/database"
 	"interface_lesson/internal/routes"
 	"interface_lesson/internal/services"
+	"interface_lesson/internal/swagger"
 
 	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgx/v5/pgxpool"
-	swaggerfiles "github.com/swaggo/files"
-	ginSwagger "github.com/swaggo/gin-swagger"
 
 	"go.uber.org/fx"
 	"go.uber.org/zap"
@@ -36,11 +34,10 @@ func main() {
 		),
 		services.Module,
 		routes.Module,
+		swagger.Module,
 
 		fx.Invoke(func(pool *pgxpool.Pool, router *gin.Engine, log *zap.Logger) {
-			//TODO: replace it to new file like "swagger" and "setup"
-			docs.SwaggerInfo.Schemes = []string{"http"}
-			router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
+
 		}),
 	).Run()
 }
