@@ -4,10 +4,7 @@ definitions:
     properties:
       description:
         type: string
-      error:
-        description: 'TODO: Remove id from Wrapper'
-      id:
-        type: integer
+      error: {}
     type: object
   dto.NewProfileDTO:
     properties:

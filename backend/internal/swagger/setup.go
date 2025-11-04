@@ -1,8 +1,6 @@
 package swagger
 
 import (
-	"interface_lesson/docs"
-
 	"github.com/gin-gonic/gin"
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -14,7 +12,7 @@ var Module = fx.Module("swagger",
 		router *gin.Engine,
 
 	) {
-		docs.SwaggerInfo.Schemes = []string{"http"}
+		SwaggerInfo.Schemes = []string{"http"}
 		router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 	}),
 )

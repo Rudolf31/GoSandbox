@@ -363,12 +363,7 @@
                 "description": {
                     "type": "string"
                 },
-                "error": {
-                    "description": "TODO: Remove id from Wrapper"
-                },
-                "id": {
-                    "type": "integer"
-                }
+                "error": {}
             }
         },
         "dto.NewProfileDTO": {
