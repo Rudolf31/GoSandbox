@@ -9,6 +9,37 @@ import (
 	"context"
 )
 
+const createAccount = `-- name: CreateAccount :one
+INSERT INTO accounts (username)
+VALUES ($1)
+RETURNING id, username
+`
+
+func (q *Queries) CreateAccount(ctx context.Context, username string) (Account, error) {
+	row := q.db.QueryRow(ctx, createAccount, username)
+	var i Account
+	err := row.Scan(&i.ID, &i.Username)
+	return i, err
+}
+
+const createLoginInfo = `-- name: CreateLoginInfo :one
+INSERT INTO login_info (account_id, password_hesh)
+VALUES ($1, $2)
+RETURNING id, account_id, password_hesh
+`
+
+type CreateLoginInfoParams struct {
+	AccountID    int32
+	PasswordHesh string
+}
+
+func (q *Queries) CreateLoginInfo(ctx context.Context, arg CreateLoginInfoParams) (LoginInfo, error) {
+	row := q.db.QueryRow(ctx, createLoginInfo, arg.AccountID, arg.PasswordHesh)
+	var i LoginInfo
+	err := row.Scan(&i.ID, &i.AccountID, &i.PasswordHesh)
+	return i, err
+}
+
 const createProfile = `-- name: CreateProfile :one
 INSERT INTO profiles (name, last_name, age)
 VALUES ($1, $2, $3)
@@ -43,6 +74,30 @@ func (q *Queries) DeleteProfile(ctx context.Context, id int32) (int32, error) {
 	row := q.db.QueryRow(ctx, deleteProfile, id)
 	err := row.Scan(&id)
 	return id, err
+}
+
+const getAccount = `-- name: GetAccount :one
+SELECT id, username from accounts
+WHERE id = $1
+`
+
+func (q *Queries) GetAccount(ctx context.Context, id int32) (Account, error) {
+	row := q.db.QueryRow(ctx, getAccount, id)
+	var i Account
+	err := row.Scan(&i.ID, &i.Username)
+	return i, err
+}
+
+const getLoginInfo = `-- name: GetLoginInfo :one
+SELECT id, account_id, password_hesh from login_info
+WHERE id = $1
+`
+
+func (q *Queries) GetLoginInfo(ctx context.Context, id int32) (LoginInfo, error) {
+	row := q.db.QueryRow(ctx, getLoginInfo, id)
+	var i LoginInfo
+	err := row.Scan(&i.ID, &i.AccountID, &i.PasswordHesh)
+	return i, err
 }
 
 const getProfile = `-- name: GetProfile :one

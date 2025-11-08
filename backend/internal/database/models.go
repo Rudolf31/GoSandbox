@@ -4,6 +4,17 @@
 
 package database
 
+type Account struct {
+	ID       int32
+	Username string
+}
+
+type LoginInfo struct {
+	ID           int32
+	AccountID    int32
+	PasswordHesh string
+}
+
 type Profile struct {
 	ID       int32
 	Name     string

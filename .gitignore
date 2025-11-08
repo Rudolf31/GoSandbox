@@ -42,6 +42,9 @@
 # Go workspace file
 go.work
 
+# Ignore debug binary files
+__debug_bin*.exe
+
 ### VisualStudioCode ###
 .vscode/*
 !.vscode/settings.json

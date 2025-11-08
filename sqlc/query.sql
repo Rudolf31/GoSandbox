@@ -28,3 +28,21 @@ RETURNING *;
 DELETE FROM profiles
 WHERE id = $1
 RETURNING id;
+
+-- name: GetAccount :one
+SELECT * from accounts
+WHERE id = $1;
+
+-- name: GetLoginInfo :one
+SELECT * from login_info
+WHERE id = $1;
+
+-- name: CreateAccount :one
+INSERT INTO accounts (username)
+VALUES ($1)
+RETURNING *;
+
+-- name: CreateLoginInfo :one
+INSERT INTO login_info (account_id, password_hesh)
+VALUES ($1, $2)
+RETURNING *;
