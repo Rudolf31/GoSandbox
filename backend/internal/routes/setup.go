@@ -12,8 +12,9 @@ var Module = fx.Module("routes",
 		router *gin.Engine,
 		profileService services.ProfileService,
 		calculatorService services.CalculatorService,
+		authService services.AuthService,
 	) {
-		profileRoutes(router, profileService)
+		profileRoutes(router, profileService, authService)
 		calculatorRoutes(router, calculatorService)
 	}),
 )

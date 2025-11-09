@@ -6,6 +6,7 @@ import (
 
 var Module = fx.Module("services",
 	fx.Provide(
+		NewAuthService,
 		NewCalculatorService,
 		NewProfileService,
 	),

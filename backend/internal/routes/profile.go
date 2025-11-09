@@ -2,6 +2,7 @@ package routes
 
 import (
 	customeerrors "interface_lesson/internal/customerrors"
+	"interface_lesson/internal/middleware"
 	"interface_lesson/internal/models/dto"
 	"interface_lesson/internal/services"
 	"net/http"
@@ -10,15 +11,16 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func profileRoutes(router *gin.Engine, profileService services.ProfileService) {
+func profileRoutes(router *gin.Engine, profileService services.ProfileService, authService services.AuthService) {
 	profileGroup := router.Group("/profile")
-	{
-		profileGroup.POST("/", func(c *gin.Context) { createProfile(c, profileService) })
-		profileGroup.GET("/:id", func(c *gin.Context) { getProfile(c, profileService) })
-		profileGroup.PUT("/:id", func(c *gin.Context) { updateProfile(c, profileService) })
-		profileGroup.PATCH("/:id", func(c *gin.Context) { patchProfile(c, profileService) })
-		profileGroup.DELETE("/:id", func(c *gin.Context) { deleteProfile(c, profileService) })
-	}
+	profileGroup.Use(middleware.NewAuthMiddleware(authService))
+
+	profileGroup.POST("/", func(c *gin.Context) { createProfile(c, profileService) })
+	profileGroup.GET("/:id", func(c *gin.Context) { getProfile(c, profileService) })
+	profileGroup.PUT("/:id", func(c *gin.Context) { updateProfile(c, profileService) })
+	profileGroup.PATCH("/:id", func(c *gin.Context) { patchProfile(c, profileService) })
+	profileGroup.DELETE("/:id", func(c *gin.Context) { deleteProfile(c, profileService) })
+
 }
 
 // @Summary 	Create a new profile
