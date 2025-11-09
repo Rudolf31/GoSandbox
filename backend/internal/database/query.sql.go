@@ -76,20 +76,32 @@ func (q *Queries) DeleteProfile(ctx context.Context, id int32) (int32, error) {
 	return id, err
 }
 
-const getAccount = `-- name: GetAccount :one
-SELECT id, username from accounts
+const getAccountById = `-- name: GetAccountById :one
+SELECT id, username FROM accounts
 WHERE id = $1
 `
 
-func (q *Queries) GetAccount(ctx context.Context, id int32) (Account, error) {
-	row := q.db.QueryRow(ctx, getAccount, id)
+func (q *Queries) GetAccountById(ctx context.Context, id int32) (Account, error) {
+	row := q.db.QueryRow(ctx, getAccountById, id)
+	var i Account
+	err := row.Scan(&i.ID, &i.Username)
+	return i, err
+}
+
+const getAccountByUsername = `-- name: GetAccountByUsername :one
+SELECT id, username FROM accounts
+where username = $1
+`
+
+func (q *Queries) GetAccountByUsername(ctx context.Context, username string) (Account, error) {
+	row := q.db.QueryRow(ctx, getAccountByUsername, username)
 	var i Account
 	err := row.Scan(&i.ID, &i.Username)
 	return i, err
 }
 
 const getLoginInfo = `-- name: GetLoginInfo :one
-SELECT id, account_id, password_hesh from login_info
+SELECT id, account_id, password_hesh FROM login_info
 WHERE id = $1
 `
 
@@ -97,6 +109,33 @@ func (q *Queries) GetLoginInfo(ctx context.Context, id int32) (LoginInfo, error)
 	row := q.db.QueryRow(ctx, getLoginInfo, id)
 	var i LoginInfo
 	err := row.Scan(&i.ID, &i.AccountID, &i.PasswordHesh)
+	return i, err
+}
+
+const getLoginInfoByUsername = `-- name: GetLoginInfoByUsername :one
+SELECT login_info.id, account_id, password_hesh, accounts.id, username FROM login_info
+JOIN accounts ON account_id = accounts.id
+WHERE username = $1
+`
+
+type GetLoginInfoByUsernameRow struct {
+	ID           int32
+	AccountID    int32
+	PasswordHesh string
+	ID_2         int32
+	Username     string
+}
+
+func (q *Queries) GetLoginInfoByUsername(ctx context.Context, username string) (GetLoginInfoByUsernameRow, error) {
+	row := q.db.QueryRow(ctx, getLoginInfoByUsername, username)
+	var i GetLoginInfoByUsernameRow
+	err := row.Scan(
+		&i.ID,
+		&i.AccountID,
+		&i.PasswordHesh,
+		&i.ID_2,
+		&i.Username,
+	)
 	return i, err
 }
 

@@ -29,13 +29,22 @@ DELETE FROM profiles
 WHERE id = $1
 RETURNING id;
 
--- name: GetAccount :one
-SELECT * from accounts
+-- name: GetAccountById :one
+SELECT * FROM accounts
 WHERE id = $1;
 
+-- name: GetAccountByUsername :one
+SELECT * FROM accounts
+where username = $1;
+
 -- name: GetLoginInfo :one
-SELECT * from login_info
+SELECT * FROM login_info
 WHERE id = $1;
+
+-- name: GetLoginInfoByUsername :one
+SELECT * FROM login_info
+JOIN accounts ON account_id = accounts.id
+WHERE username = $1;
 
 -- name: CreateAccount :one
 INSERT INTO accounts (username)

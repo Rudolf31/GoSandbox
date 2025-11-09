@@ -30,7 +30,9 @@ func (p *profileServiceImpl) CreateProfile(profile dto.NewProfileDTO) (*int32, *
 
 	q := database.New(p.pool)
 
-	newProfile, err := q.CreateProfile(context.Background(), database.CreateProfileParams{
+	c := context.TODO()
+
+	newProfile, err := q.CreateProfile(c, database.CreateProfileParams{
 		Name:     profile.Name,
 		LastName: profile.LastName,
 		Age:      int16(profile.Age),
@@ -58,7 +60,9 @@ func (p *profileServiceImpl) DeleteProfile(id int32) *customeerrors.Wrapper {
 
 	q := database.New(p.pool)
 
-	_, err := q.DeleteProfile(context.Background(), id)
+	c := context.TODO()
+
+	_, err := q.DeleteProfile(c, id)
 	if err != nil {
 
 		if errors.Is(err, pgx.ErrNoRows) {
@@ -100,7 +104,9 @@ func (p *profileServiceImpl) GetProfile(id int32) (*dto.ProfileDTO, *customeerro
 
 	q := database.New(p.pool)
 
-	newProfile, err := q.GetProfile(context.Background(), id)
+	c := context.TODO()
+
+	newProfile, err := q.GetProfile(c, id)
 
 	if err != nil {
 
@@ -151,7 +157,9 @@ func (p *profileServiceImpl) UpdateProfile(id int32, profile dto.NewProfileDTO) 
 
 	q := database.New(p.pool)
 
-	newProfile, err := q.UpdateProfile(context.Background(), database.UpdateProfileParams{
+	c := context.TODO()
+
+	newProfile, err := q.UpdateProfile(c, database.UpdateProfileParams{
 		ID:       id,
 		Name:     profile.Name,
 		LastName: profile.LastName,
@@ -204,7 +212,9 @@ func (p *profileServiceImpl) PatchProfile(id int32, profile dto.PatchProfileDTO)
 
 	q := database.New(p.pool)
 
-	newProfile, err := q.PatchProfile(context.Background(), database.PatchProfileParams{
+	c := context.TODO()
+
+	newProfile, err := q.PatchProfile(c, database.PatchProfileParams{
 		ID:       id,
 		Name:     profile.Name,
 		LastName: profile.LastName,
