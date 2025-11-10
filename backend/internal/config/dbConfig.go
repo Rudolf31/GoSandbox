@@ -20,9 +20,13 @@ type Config struct {
 	DB     DBConfig
 }
 
-func NewConfig() (*Config, error) {
+func NewConfig() *Config {
 	if _, err := os.Stat(".env"); err == nil {
-		_ = godotenv.Overload(".env")
+		err = godotenv.Overload(".env")
+		if err != nil {
+			panic(err.Error())
+		}
+
 	}
 
 	v := viper.New()
@@ -31,7 +35,6 @@ func NewConfig() (*Config, error) {
 
 	v.SetDefault("app.env", "development")
 
-	v.SetDefault("db.url", "")
 	v.SetDefault("db.minconns", 1)
 	v.SetDefault("db.maxconns", 10)
 
@@ -49,5 +52,5 @@ func NewConfig() (*Config, error) {
 		panic(fmt.Errorf("db.url is not set"))
 	}
 
-	return cfg, nil
+	return cfg
 }
