@@ -5,11 +5,20 @@ import (
 
 	"github.com/jackc/pgx/v5/pgxpool"
 	"go.uber.org/fx"
+
+	"interface_lesson/internal/config"
 )
 
-func NewPool(lc fx.Lifecycle) *pgxpool.Pool {
+func NewPool(lc fx.Lifecycle, cfg *config.Config) *pgxpool.Pool {
+	pgxCfg, err := pgxpool.ParseConfig(cfg.DB.URL)
+	if err != nil {
+		panic(err.Error())
+	}
 
-	pool, errPool := pgxpool.New(context.Background(), "postgresql://postgres:postgres@localhost:5432/postgres?sslmode=disable")
+	pgxCfg.MinConns = cfg.DB.MinConns
+	pgxCfg.MaxConns = cfg.DB.MaxConns
+
+	pool, errPool := pgxpool.NewWithConfig(context.Background(), pgxCfg)
 	if errPool != nil {
 		panic(errPool.Error())
 	}

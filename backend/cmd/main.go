@@ -1,6 +1,7 @@
 package main
 
 import (
+	"interface_lesson/internal/config"
 	"interface_lesson/internal/database"
 	"interface_lesson/internal/routes"
 	"interface_lesson/internal/services"
@@ -28,6 +29,7 @@ func main() {
 
 	fx.New(
 		fx.Provide(
+			config.NewConfig,
 			database.NewPool,
 			routes.NewGin,
 			zap.NewProduction,
